@@ -212,11 +212,13 @@ func NewTestBuildOpenshift(t *testing.T) *testBuildOpenshift {
 		DockerBuildStrategy: &buildstrategy.DockerBuildStrategy{
 			Image:          "test-docker-builder",
 			UseLocalImages: false,
+			Codec: latest.Codec,
 		},
 		STIBuildStrategy: &buildstrategy.STIBuildStrategy{
 			Image:                "test-sti-builder",
 			TempDirectoryCreator: buildstrategy.STITempDirectoryCreator,
 			UseLocalImages:       false,
+			Codec: latest.Codec,
 		},
 		Stop: openshift.stop,
 	}
