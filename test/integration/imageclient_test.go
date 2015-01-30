@@ -231,7 +231,7 @@ func NewTestImageOpenShift(t *testing.T) *testImageOpenshift {
 		EtcdHelper:         etcdHelper,
 		HealthCheckMinions: false,
 		KubeletClient:      kubeletClient,
-		APIPrefix:          "/api/v1beta1",
+		APIPrefix:          "/api",
 		RestfulContainer:	handlerContainer,
 
 	})

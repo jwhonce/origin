@@ -344,7 +344,7 @@ func NewTestOpenshift(t *testing.T) *testOpenshift {
 		EtcdHelper:         etcdHelper,
 		HealthCheckMinions: false,
 		KubeletClient:      kubeletClient,
-		APIPrefix:          "/api/v1beta1",
+		APIPrefix:          "/api",
 		AdmissionControl:   admit.NewAlwaysAdmit(),
 		RestfulContainer:	handlerContainer,
 	})
