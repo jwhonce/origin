@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	kapi "github.com/GoogleCloudPlatform/kubernetes/pkg/api"
-	kapi_v1beta1 "github.com/GoogleCloudPlatform/kubernetes/pkg/api/v1beta1"
 	klatest "github.com/GoogleCloudPlatform/kubernetes/pkg/api/latest"
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/apiserver"
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/client"
@@ -35,7 +34,6 @@ func init() {
 }
 
 func TestListBuilds(t *testing.T) {
-	return
 
 	deleteAllEtcdKeys()
 	openshift := NewTestBuildOpenshift(t)
@@ -173,17 +171,16 @@ func NewTestBuildOpenshift(t *testing.T) *testBuildOpenshift {
 		t.Fatalf("Unable to configure Kubelet client: %v", err)
 	}
 
-	kmaster := master.New(&master.Config{
+	handlerContainer := master.NewHandlerContainer(osMux)
+	_ = master.New(&master.Config{
 		Client:             kubeClient,
 		EtcdHelper:         etcdHelper,
 		HealthCheckMinions: false,
 		KubeletClient:      kubeletClient,
 		APIPrefix:          "/api/v1beta1",
 		AdmissionControl:   admit.NewAlwaysAdmit(),
+		RestfulContainer:	handlerContainer,
 	})
-
-	if &kmaster != nil {
-	}
 
 	interfaces, _ := latest.InterfacesFor(latest.Version)
 
@@ -194,8 +191,6 @@ func NewTestBuildOpenshift(t *testing.T) *testBuildOpenshift {
 		"buildConfigs": buildconfigregistry.NewREST(buildEtcd),
 	}
 
-	handlerContainer := master.NewHandlerContainer(osMux)
-	apiserver.NewAPIGroupVersion(storage, kapi_v1beta1.Codec, "/api/v1beta1", klatest.SelfLinker, admit.NewAlwaysAdmit()).InstallREST(handlerContainer, osMux, "/api", "v1beta1")
 
 	osPrefix := "/osapi/v1beta1"
 	apiserver.NewAPIGroupVersion(storage, latest.Codec, osPrefix, interfaces.MetadataAccessor, admit.NewAlwaysAdmit()).InstallREST(handlerContainer, osMux, "/osapi", "v1beta1")
